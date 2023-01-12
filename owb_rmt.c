@@ -62,6 +62,8 @@ sample code bearing this copyright.
 #include "driver/gpio.h"
 #include "esp_log.h"
 
+#include "hal/gpio_ll.h" //TODO(rich): fix https://github.com/espressif/esp-idf/issues/9184#issuecomment-1159881905
+
 #undef OW_DEBUG
 
 
@@ -437,8 +439,8 @@ static owb_status _init(owb_rmt_driver_info *info, gpio_num_t gpio_num,
     // attach RMT channels to new gpio pin
     // ATTENTION: set pin for rx first since gpio_output_disable() will
     //            remove rmt output signal in matrix!
-    rmt_set_pin(info->rx_channel, RMT_MODE_RX, gpio_num);
-    rmt_set_pin(info->tx_channel, RMT_MODE_TX, gpio_num);
+    rmt_set_gpio(info->rx_channel, RMT_MODE_RX, gpio_num, false);
+    rmt_set_gpio(info->tx_channel, RMT_MODE_TX, gpio_num, false);
 
     // force pin direction to input to enable path to RX channel
     PIN_INPUT_ENABLE(GPIO_PIN_MUX_REG[gpio_num]);
